@@ -17,3 +17,7 @@ Link shortener using firestore
 Simply follow the link `$URL/api/g/$SHORT`
 
 Example :`$URL/api/g/personal-fb` will be redirected to `https://www.facebook.com/khanhvu2212/`
+
+
+### Live Example
+[Link](http://www.jsjsjs.ga/)
