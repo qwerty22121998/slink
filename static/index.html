@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>SLINK</title>
+</head>
+<body class="d-flex center flex-column">
+<div class="root d-flex center">
+    <div class="inline-block relative url-input">
+        <label for="url">URL</label>
+        <input id="url" type="text" placeholder="Your url goes here!"/>
+    </div>
+    <div class="inline-block relative">
+        <label for="short">Short</label>
+        <input id="short" type="text" placeholder="Customize your short url"/>
+    </div>
+    <div class="inline-block relative">
+        <button id="submit" class="shorten-btn">Shorten</button>
+    </div>
+</div>
+<div class="root">
+    <span id="preview-txt">Preview</span>: <a id="preview"></a>
+</div>
+
+
+<script>
+    const urlDOM = document.getElementById("url")
+    const shortDOM = document.getElementById("short")
+    const submitBtn = document.getElementById("submit")
+    const previewDOM = document.getElementById("preview")
+    const previewTxtDom = document.getElementById("preview-txt")
+
+    let submitted = true
+
+    const genPreview = (short) => {
+        return window.location.origin + "/api/g/" + short
+    }
+
+
+    const setPreview = (preview) => {
+        previewDOM.innerText = preview
+        previewDOM.href = preview
+    }
+
+    shortDOM.addEventListener("input", () => {
+        previewTxtDom.innerText = "Preview"
+        setPreview(genPreview(shortDOM.value))
+    })
+
+    urlDOM.addEventListener("input", () => {
+        previewTxtDom.innerText = "Preview"
+        if (urlDOM.value) {
+            submitted = false
+        }
+    })
+
+
+    const genLink = async () => {
+        const url = urlDOM.value
+        const short = shortDOM.value
+        const res = await fetch('/api/short', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({url, short})
+        })
+        let data = await res.json()
+        if (res.status !== 200) {
+            alert(data.message)
+            return
+        }
+        previewTxtDom.innerText = "Result"
+        submitted = true
+        setPreview(genPreview(data.data.short))
+
+    }
+
+    submitBtn.onclick = genLink
+
+    window.onbeforeunload = () => submitted ? null : "Are you sure?";
+
+</script>
+</body>
+<style>
+
+    body {
+        height: 100vh;
+
+    }
+
+
+    .d-flex {
+        display: flex;
+    }
+
+    .flex-column {
+        flex-direction: column;
+    }
+
+    .center {
+        justify-content: center;
+        align-items: center;
+        font-family: monospace;
+    }
+
+    .root {
+        width: 40%;
+    }
+
+    .inline-block {
+        display: inline-block;
+        flex: 1;
+    }
+
+    .relative {
+        position: relative;
+    }
+
+    label {
+        position: absolute;
+        font-size: 20px;
+        top: -100%;
+    }
+
+    input {
+        width: 100%;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    .url-input {
+        flex: 2;
+    }
+</style>
+</html>
