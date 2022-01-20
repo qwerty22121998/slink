@@ -2,7 +2,7 @@ package dtos
 
 type ShortLink struct {
 	Name      string `json:"name"`
-	URL       string `json:"url" validate:"required"`
+	URL       string `json:"url" validate:"required,url"`
 	Short     string `json:"short"`
 	ExpiredAt int64  `json:"expired_at"`
 }
