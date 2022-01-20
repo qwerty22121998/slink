@@ -13,8 +13,10 @@ func main() {
 	config := configs.Global
 	e := echo.New()
 	route := e.Group("/api")
+	e.Static("/", "static")
 	fb := firebase.NewFireBaseAdapter(firebase.Config{
 		CertPath: config.GoogleAppCertPath,
+		CertJSON: config.GoogleAppCertJSON,
 	})
 	repo := repositories.NewShortLinkRepository(fb.DB)
 	service := services.NewShortLinkService(repo)

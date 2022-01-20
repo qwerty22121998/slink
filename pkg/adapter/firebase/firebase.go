@@ -13,7 +13,13 @@ type Adapter struct {
 }
 
 func NewFireBaseAdapter(c Config) *Adapter {
-	opt := option.WithCredentialsFile(c.CertPath)
+	var opt option.ClientOption
+	if c.CertPath != "" {
+		opt = option.WithCredentialsFile(c.CertPath)
+	} else {
+		opt = option.WithCredentialsJSON([]byte(c.CertJSON))
+	}
+
 	ctx := context.Background()
 	app, err := firebase.NewApp(ctx, nil, opt)
 	if err != nil {
